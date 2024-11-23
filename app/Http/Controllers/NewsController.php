@@ -60,4 +60,17 @@ class NewsController extends Controller
 
         return response()->json(['message' => 'News updated successfully', 'news' => $news], 200);
     }
+
+    public function destroy($id)
+    {
+        $news = News::find($id);
+
+        if (!$news) {
+            return response()->json(['message' => 'News not found'], 404);
+        }
+
+        $news->delete();
+
+        return response()->json(['message' => 'News deleted successfully'], 200);
+    }
 }
