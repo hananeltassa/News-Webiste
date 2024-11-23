@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;  
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
@@ -38,6 +38,7 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:8|confirmed',
             'role' => 'nullable|in:admin,user',
+            'age' => 'required|integer|min:9',
         ]);
 
         if ($validator->fails()) {
@@ -51,6 +52,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $role,
+            'age' => $request->age, 
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

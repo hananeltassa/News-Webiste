@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Validator;
 
 class NewsController extends Controller
 {
-    private function validateNewsData($request){
+    private function validateNewsData($request)
+    {
         return Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
@@ -16,13 +17,24 @@ class NewsController extends Controller
         ]);
     }
 
-    public function index() //list new items
+    public function index(Request $request)
     {
-        $news = News::all(); 
+        $user = $request->user();
+        $userAge = $user ? $user->age : null;
+
+        if (is_null($userAge)) {
+            return response()->json(['message' => 'User age is required'], 403);
+        }
+
+        $news = News::where(function ($query) use ($userAge) {
+            $query->where('min_age', '<=', $userAge)
+                  ->orWhereNull('min_age'); 
+        })->get();
+
         return response()->json($news);
     }
 
-    public function store(Request $request) //create new items
+    public function store(Request $request)
     {
         $validator = $this->validateNewsData($request);
 
@@ -39,7 +51,8 @@ class NewsController extends Controller
         return response()->json(['message' => 'News created successfully', 'news' => $news], 201);
     }
 
-    public function update(Request $request, $id){
+    public function update(Request $request, $id)
+    {
         $validator = $this->validateNewsData($request);
 
         if ($validator->fails()) {
