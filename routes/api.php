@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\NewsController;
+use App\Http\Controllers\ArticleController;
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -17,6 +19,8 @@ Route::get('/user', function (Request $request) {
 Route::middleware('auth:sanctum')->group(function () {
     // Public route for fetching news 
     Route::get('/news', [NewsController::class, 'index']);
+    Route::get('/news/{newsId}/articles', [ArticleController::class, 'index']);
+    Route::post('/news/{newsId}/articles', [ArticleController::class, 'store']);
 
     // Admin-only routes for creating, updating, and deleting news
     Route::middleware(IsAdmin::class)->group(function () {

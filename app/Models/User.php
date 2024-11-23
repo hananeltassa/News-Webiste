@@ -25,6 +25,13 @@ class User extends Authenticatable
         'role',
     ];
 
+    // In User.php model
+    public function articles()
+    {
+        return $this->hasMany(Article::class);
+    }
+
+
     /**
      * The attributes that should be hidden for serialization.
      *
